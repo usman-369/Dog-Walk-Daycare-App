@@ -1,9 +1,13 @@
 import csv
+import sys
 import time
 
 
-BOOKINGS_FILE = "bookings.csv"
-WALKERS_FILE = "walkers.csv"
+BOOKINGS_FILE = "services.csv"
+SERVICES_FILE = "walkers.csv"
+
+
+EXIT_MSG = "\n\tExiting the menu. ;)"
 
 
 def save_bookings(booking_data):
@@ -15,11 +19,11 @@ def save_bookings(booking_data):
         print("\n\tFile Not Found! :0")
 
 
-def save_walkers(walker_data):
+def save_services(service_data):
     try:
-        with open(WALKERS_FILE, mode="a", newline="") as file:
+        with open(SERVICES_FILE, mode="a", newline="") as file:
             write = csv.writer(file)
-            write.writerow(walker_data)
+            write.writerow(service_data)
     except FileNotFoundError:
         print("\n\tFile Not Found! :0")
 
@@ -76,7 +80,7 @@ def walk_input():
             print("\n\tYou chose a 2-hour walk.")
             return 2.0
         elif choice.lower() == "e":
-            return False
+            return None
         else:
             print("\n\tInvalid Choice! Try again. :0")
             continue
@@ -108,52 +112,58 @@ def daycare_input():
             print("\n\tYou chose 24-hours of daycare.")
             return 24.0
         elif choice.lower() == "e":
-            return False
+            return None
         else:
             print("\n\tInvalid Choice! Try again. :0")
             continue
 
 
-def booking_input():
-    print("\nBooking Menu:")
-
+def general_input():
     print(
-        "\n\tNote: You can always enter [exit] to discard\n\teverything and exit from the menu.\n"
-    )
+            "\n\tNote: You can always enter [exit] to\n\tdiscard everything and exit from the menu.\n"
+        )
 
     while True:
-        usr_name_f = input("\tEnter your first name: ").strip().capitalize()
-        if usr_name_f.lower() == "exit":
-            print("\n\tExiting the menu. ;)")
+        first_name = input("\tEnter your first name: ").strip().capitalize()
+        if first_name.lower() == "exit":
             return None
 
-        usr_name_l = input("\tEnter your last name: ").strip().capitalize()
-        if usr_name_l.lower() == "exit":
-            print("\n\tExiting the menu. ;)")
+        last_name = input("\tEnter your last name: ").strip().capitalize()
+        if last_name.lower() == "exit":
             return None
-        elif (len(usr_name_f) > 15) or (len(usr_name_l) > 15):
+        elif (len(first_name) > 15) or (len(last_name) > 15):
             print(
                 '\n\tError! Maximum character limit for a name is "15" characters each. :0\n'
             )
             continue
-
         break
 
     while True:
-        usr_phone = input("\tEnter your phone number: ").strip()
-        if usr_phone.lower() == "exit":
-            print("\n\tExiting the menu. ;)")
+        phone = input("\tEnter your phone number: ").strip()
+        if phone.lower() == "exit":
             return None
-        elif (len(usr_phone) != 11) or (not usr_phone.isdigit()):
-            print('\n\tError! Please enter a valid "11"-digit phone number. :0\n')
+        elif (len(phone) != 11) or (not phone.isdigit()):
+            print("\n\tError! Please enter a valid phone number. :0\n")
             continue
-
         break
+
+    return first_name, last_name, phone
+
+
+def booking_input():
+    print("\nBooking Menu:")
+
+    g_input = general_input()
+    if g_input is None:
+        print(EXIT_MSG)
+        return None
+
+    first_name, last_name, phone = g_input
 
     while True:
         num_dogs = input("\tEnter the number of dog(s) [1-5]: ").strip()
         if num_dogs.lower() == "exit":
-            print("\n\tExiting the menu. ;)")
+            print(EXIT_MSG)
             return None
         elif not num_dogs.isdigit():
             print("\n\tInvalid Input! Try again. :0\n")
@@ -177,7 +187,7 @@ def booking_input():
             print("It's really that simple. Try again. :0")
             continue
         if any(i.lower() == "exit" for i in dog_breed):
-            print("\n\tExiting the menu. ;)")
+            print(EXIT_MSG)
             return None
         break
 
@@ -191,55 +201,97 @@ def booking_input():
             .lower()
         )
         if choice == "exit":
-            print("\n\tExiting the menu. ;)")
+            print(EXIT_MSG)
             return None
         elif choice == "walk":
             service_type = "Walk"
-            details = walk_input()
+            duration = walk_input()
         elif choice == "daycare":
             service_type = "Daycare"
-            details = daycare_input()
+            duration = daycare_input()
         else:
             print("\n\tInvalid Choice! Try again. :0")
             continue
-        if not details:
+        if not duration:
             continue
         break
 
-    assigned_service = assign_service(service_type)
-    if not assigned_service:
-        print("\n\tSorry, no walker/carer is available at the moment. :(")
-        return None
+    # assigned_service = assign_service(service_type)
+    # if not assigned_service:
+    #     print("\n\tSorry, no walker/carer is available at the moment. :(")
+    #     return None
 
     print("\nEntered Details:")
-    print(f"\n\tFirst Name: {usr_name_f}")
-    print(f"\tLast Name: {usr_name_l}")
-    print(f"\tPhone Number: {usr_phone}")
+    print(f"\n\tFirst Name: {first_name}")
+    print(f"\tLast Name: {last_name}")
+    print(f"\tPhone Number: {phone}")
     print(f"\tNumber of Dog(s): {num_dogs}")
-    print(f"\tDog Breed(s): {dog_breed}")
+    print(f"\tDog Breed(s): {', '.join(dog_breed)}")
+    print(f"\tChosen Service: {service_type}")
+    if duration in [0.5]:
+        print(f"\tDuration of {service_type}: 30-Minutes")
+    elif duration in [1.0]:
+        print(f"\tDuration of {service_type}: {duration}-Hour")
+    elif duration in [1.5, 2.0, 4.0, 8.0, 12.0, 24.0]:
+        print(f"\tDuration of {service_type}: {duration}-Hours")
 
     while True:
-        choice_b = (
+        choice = (
             input(
-                "\n\tPlease check the details carefually and answer [yes/no]\n\tif the details are correct or not: "
+                "\n\tPlease check if the details are correct or not\n\tand answer [yes/no] to continue your booking: "
             )
             .strip()
             .lower()
         )
-
-        if choice_b == "yes":
-            pass
-        elif choice_b == "no":
-            pass
+        if choice == "yes":
+            booking_data = []
+        elif choice == "no":
+            inr_choice = input("\n\tDo you want to change your details or\n\tdiscard everything and exit? [change/exit]: ").strip().lower()
+            if inr_choice == "change":
+                booking_input()
+            elif inr_choice == "exit":
+                print(EXIT_MSG)
+                return None
+            else:
+                print("\n\tInvalid Choice! Try again. :0")
         else:
             print("\n\tInvalid Choice! Try again. :0")
             continue
-
         break
 
 
-def walker_input():
-    print("\n\tNothing here yet.")
+def service_input():
+    print("\nWalker/Carer Registration Menu:")
+
+    g_input = general_input()
+    if g_input is None:
+        print(EXIT_MSG)
+        return None
+
+    first_name, last_name, phone = g_input
+
+    while True:
+        service_type = (
+            input("\tEnter the service you want to provide [walk/daycare]: ")
+            .strip()
+            .lower()
+        )
+        if service_type == "exit":
+            print(EXIT_MSG)
+            return None
+        elif service_type not in ["walk", "daycare"]:
+            print("\n\tInvalid Input! Try again. :0")
+            continue
+        break
+
+    service_data = [
+        first_name,
+        last_name,
+        phone,
+        service_type,
+    ]
+    save_services(service_data)
+    print("\n\tWalker/Carer Registration Successful! ;)")
 
 
 def main():
@@ -258,15 +310,15 @@ def main():
         if choice == "1":
             booking_input()
         elif choice == "2":
-            walker_input()
+            service_input()
         elif choice == "3":
             fetch_bookings()
         elif choice == "4":
             fetch_walkers()
         elif choice.lower() == "e":
             print("\nExiting the program. Bye! ;)\n")
-            time.sleep(2)
-            break
+            time.sleep(1)
+            sys.exit()
         else:
             print("\n\tInvalid Choice! Please try again. :0")
             continue
