@@ -1,13 +1,18 @@
 import csv
-import sys
+import random
 import time
-
-
-BOOKINGS_FILE = "services.csv"
-SERVICES_FILE = "walkers.csv"
+import sys
+from tabulate import tabulate
 
 
 EXIT_MSG = "\n\tExiting the menu. ;)"
+INV_MSG = "\n\tIvalid Choice! Try again. :0"
+FNF_MSG = "\nFile Not Found! :0"
+ERROR_MSG = "\nAn error occurred: "
+
+
+BOOKINGS_FILE = "bookings.csv"
+SERVICES_FILE = "services.csv"
 
 
 def save_bookings(booking_data):
@@ -16,7 +21,10 @@ def save_bookings(booking_data):
             write = csv.writer(file)
             write.writerow(booking_data)
     except FileNotFoundError:
-        print("\n\tFile Not Found! :0")
+        print(FNF_MSG)
+    except Exception as e:
+        print(f"{ERROR_MSG}{e}")
+        return None
 
 
 def save_services(service_data):
@@ -25,33 +33,148 @@ def save_services(service_data):
             write = csv.writer(file)
             write.writerow(service_data)
     except FileNotFoundError:
-        print("\n\tFile Not Found! :0")
+        print(FNF_MSG)
+    except Exception as e:
+        print(f"{ERROR_MSG}{e}")
+        return None
 
 
 def fetch_bookings():
     try:
         with open(BOOKINGS_FILE, mode="r") as file:
             reader = csv.reader(file)
-            print("\nAll Bookings:")
-            for row in reader:
-                print(f"\t- {', '.join(row)}")
+            rows = list(reader)
+
+            print("\nAll Bookings:\n")
+            headers = [
+                "First Name",
+                "Last Name",
+                "Phone",
+                "Dogs",
+                "Breed",
+                "Service",
+                "Duration",
+            ]
+            print(tabulate(reader, headers=headers, tablefmt="fancy_grid"))
+            print("\nTotal Bookings:", len(rows))
     except FileNotFoundError:
-        print("\nNo bookings found. The file does not exist yet.")
+        print(FNF_MSG)
+        return None
+    except Exception as e:
+        print(f"{ERROR_MSG}{e}")
+        return None
 
 
-def fetch_walkers():
+def fetch_services():
     try:
-        with open(WALKERS_FILE, mode="r") as file:
+        with open(SERVICES_FILE, mode="r") as file:
             reader = csv.reader(file)
+            rows = list(reader)
+
             print("\nAll Walkers/Carers:")
-            for row in reader:
-                print(f"\t- {', '.join(row)}")
+            headers = ["First Name", "Last Name", "Phone", "Service"]
+            print(tabulate(reader, headers=headers, tablefmt="fancy_grid"))
+            print("\nTotal Walkers/Carers:", len(rows))
     except FileNotFoundError:
-        print("\nNo walkers/carers found. The file does not exist yet.")
+        print(FNF_MSG)
+        return None
+    except Exception as e:
+        print(f"{ERROR_MSG}{e}")
+        return None
 
 
-def assign_service(service_type):
-    pass
+def assign_service(chosen_service):
+    try:
+        with open(SERVICES_FILE, mode="r") as file:
+            reader = csv.reader(file)
+
+            rows = [row for row in reader if row[3].strip() == chosen_service]
+            if rows:
+                return random.choice(rows)
+            else:
+                return None
+    except FileNotFoundError:
+        print(FNF_MSG)
+        return None
+    except Exception as e:
+        print(f"{ERROR_MSG}{e}")
+        return None
+
+
+def show_details(all_details, func):
+    print("\nEntered Details:")
+    general_details = all_details[:3]
+    first_name, last_name, phone = general_details
+    print(f"\n\tFirst Name: {first_name}")
+    print(f"\tLast Name: {last_name}")
+    print(f"\tPhone Number: {phone}")
+
+    if func == "booking":
+        dog_details = all_details[3:]
+        num_dogs, dog_breed, chosen_service, duration = dog_details
+        print(f"\tNumber of Dog(s): {num_dogs}")
+        print(f"\tDog Breed(s): {', '.join(dog_breed)}")
+        print(f"\tChosen Service: {chosen_service}")
+        if duration == 0.5:
+            print(f"\tDuration of {chosen_service}: 30-Minutes")
+        elif duration == 1.0:
+            print(f"\tDuration of {chosen_service}: {duration}-Hour")
+        elif duration in [1.5, 2.0, 4.0, 8.0, 12.0, 24.0]:
+            print(f"\tDuration of {chosen_service}: {duration}-Hours")
+        return None
+
+    elif func == "registration":
+        service_details = all_details[3:]
+        service_type = service_details[0]
+        print(f"\tChosen Service: {service_type}")
+        return None
+
+
+def fee_calculation(chosen_service, duration):
+    walk_fee_rates = {0.5: 500.0, 1.0: 1000.0, 1.5: 1500.0, 2.0: 2000.0}
+    daycare_fee_rates = {4.0: 3000.0, 8.0: 5000.0, 12.0: 7000.0, 24.0: 10000.0}
+
+    if chosen_service == "Walk":
+        walk_fee = walk_fee_rates.get(duration)
+        return walk_fee
+    elif chosen_service == "Daycare":
+        daycare_fee = daycare_fee_rates.get(duration)
+        return daycare_fee
+
+
+def confirm_input(func):
+    while True:
+        choice = (
+            input(
+                f"\n\tPlease check if the details are correct and\n\tanswer [yes/no] to confirm your {func}: "
+            )
+            .strip()
+            .lower()
+        )
+        if choice == "yes":
+            return True
+        elif choice == "no":
+            while True:
+                inr_choice = (
+                    input(
+                        "\n\tDo you want to change your details or\n\tdiscard everything and exit? [change/exit]: "
+                    )
+                    .strip()
+                    .lower()
+                )
+                if inr_choice == "change":
+                    if func == "booking":
+                        return booking_input()
+                    elif func == "registration":
+                        return service_input()
+                elif inr_choice == "exit":
+                    return False
+                else:
+                    print(INV_MSG)
+                    continue
+        else:
+            print(INV_MSG)
+            continue
 
 
 def walk_input():
@@ -82,7 +205,7 @@ def walk_input():
         elif choice.lower() == "e":
             return None
         else:
-            print("\n\tInvalid Choice! Try again. :0")
+            print(INV_MSG)
             continue
 
 
@@ -114,14 +237,14 @@ def daycare_input():
         elif choice.lower() == "e":
             return None
         else:
-            print("\n\tInvalid Choice! Try again. :0")
+            print(INV_MSG)
             continue
 
 
 def general_input():
     print(
-            "\n\tNote: You can always enter [exit] to\n\tdiscard everything and exit from the menu.\n"
-        )
+        "\n\tNote: You can always enter [exit] to\n\tdiscard everything and exit from the menu.\n"
+    )
 
     while True:
         first_name = input("\tEnter your first name: ").strip().capitalize()
@@ -166,13 +289,12 @@ def booking_input():
             print(EXIT_MSG)
             return None
         elif not num_dogs.isdigit():
-            print("\n\tInvalid Input! Try again. :0\n")
+            print(f"{INV_MSG}\n")
             continue
         elif int(num_dogs) > 5:
             print('\n\tCan\'t accept more than "5" dogs for a walk.')
             print("\tDog walkers are human too. :0\n")
             continue
-
         break
 
     print('\n\tNote: If there are more than one breeds, add comma "," after each one.')
@@ -204,60 +326,53 @@ def booking_input():
             print(EXIT_MSG)
             return None
         elif choice == "walk":
-            service_type = "Walk"
+            chosen_service = "Walk"
             duration = walk_input()
         elif choice == "daycare":
-            service_type = "Daycare"
+            chosen_service = "Daycare"
             duration = daycare_input()
         else:
-            print("\n\tInvalid Choice! Try again. :0")
+            print(INV_MSG)
             continue
         if not duration:
             continue
         break
 
-    # assigned_service = assign_service(service_type)
-    # if not assigned_service:
-    #     print("\n\tSorry, no walker/carer is available at the moment. :(")
-    #     return None
+    availability = assign_service(chosen_service)
+    if not availability:
+        if chosen_service == "Walk":
+            print("\nSorry, no walker is available at the moment. :(")
+            return None
+        elif chosen_service == "Daycare":
+            print("\nSorry, no carer is available at the moment. :(")
+            return None
 
-    print("\nEntered Details:")
-    print(f"\n\tFirst Name: {first_name}")
-    print(f"\tLast Name: {last_name}")
-    print(f"\tPhone Number: {phone}")
-    print(f"\tNumber of Dog(s): {num_dogs}")
-    print(f"\tDog Breed(s): {', '.join(dog_breed)}")
-    print(f"\tChosen Service: {service_type}")
-    if duration in [0.5]:
-        print(f"\tDuration of {service_type}: 30-Minutes")
-    elif duration in [1.0]:
-        print(f"\tDuration of {service_type}: {duration}-Hour")
-    elif duration in [1.5, 2.0, 4.0, 8.0, 12.0, 24.0]:
-        print(f"\tDuration of {service_type}: {duration}-Hours")
+    func = "booking"
+    all_details = [
+        first_name,
+        last_name,
+        phone,
+        num_dogs,
+        dog_breed,
+        chosen_service,
+        duration,
+    ]
+    show_details(all_details, func)
 
-    while True:
-        choice = (
-            input(
-                "\n\tPlease check if the details are correct or not\n\tand answer [yes/no] to continue your booking: "
-            )
-            .strip()
-            .lower()
-        )
-        if choice == "yes":
-            booking_data = []
-        elif choice == "no":
-            inr_choice = input("\n\tDo you want to change your details or\n\tdiscard everything and exit? [change/exit]: ").strip().lower()
-            if inr_choice == "change":
-                booking_input()
-            elif inr_choice == "exit":
-                print(EXIT_MSG)
-                return None
-            else:
-                print("\n\tInvalid Choice! Try again. :0")
-        else:
-            print("\n\tInvalid Choice! Try again. :0")
-            continue
-        break
+    fee = fee_calculation(chosen_service, duration)
+    print(f"\n\tTotal Fee: {fee}PKR")
+
+    confirmation = confirm_input(func)
+    if confirmation is True:
+        save_bookings(all_details)
+        print("\n\tBooking Successful! ;)")
+        service_provider = assign_service(chosen_service)
+        print(f"\n\tAssigned Walker/Carer: {service_provider[0]} {service_provider[1]}")
+        print(f"\tContact: {service_provider[2]}")
+        return None
+    elif confirmation is False:
+        print(EXIT_MSG)
+        return None
 
 
 def service_input():
@@ -280,18 +395,27 @@ def service_input():
             print(EXIT_MSG)
             return None
         elif service_type not in ["walk", "daycare"]:
-            print("\n\tInvalid Input! Try again. :0")
+            print(INV_MSG)
             continue
         break
 
-    service_data = [
+    func = "registration"
+    all_details = [
         first_name,
         last_name,
         phone,
         service_type,
     ]
-    save_services(service_data)
-    print("\n\tWalker/Carer Registration Successful! ;)")
+    show_details(all_details, func)
+
+    confirmation = confirm_input(func)
+    if confirmation is True:
+        save_services(all_details)
+        print("\n\tRegistration Successful! ;)")
+        return None
+    elif confirmation is False:
+        print(EXIT_MSG)
+        return None
 
 
 def main():
@@ -314,13 +438,13 @@ def main():
         elif choice == "3":
             fetch_bookings()
         elif choice == "4":
-            fetch_walkers()
+            fetch_services()
         elif choice.lower() == "e":
             print("\nExiting the program. Bye! ;)\n")
             time.sleep(1)
             sys.exit()
         else:
-            print("\n\tInvalid Choice! Please try again. :0")
+            print(INV_MSG)
             continue
 
 
