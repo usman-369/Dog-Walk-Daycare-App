@@ -102,31 +102,31 @@ def assign_service(chosen_service):
 
 
 def show_details(all_details, func):
-    print("\nEntered Details:")
+    print("\n\tEntered Details:")
     general_details = all_details[:3]
     first_name, last_name, phone = general_details
-    print(f"\n\tFirst Name: {first_name}")
-    print(f"\tLast Name: {last_name}")
-    print(f"\tPhone Number: {phone}")
+    print(f"\n\t\tFirst Name: {first_name}")
+    print(f"\t\tLast Name: {last_name}")
+    print(f"\t\tPhone Number: {phone}")
 
     if func == "booking":
         dog_details = all_details[3:]
         num_dogs, dog_breed, chosen_service, duration = dog_details
-        print(f"\tNumber of Dog(s): {num_dogs}")
-        print(f"\tDog Breed(s): {', '.join(dog_breed)}")
-        print(f"\tChosen Service: {chosen_service}")
+        print(f"\t\tNumber of Dog(s): {num_dogs}")
+        print(f"\t\tDog Breed(s): {', '.join(dog_breed)}")
+        print(f"\t\tChosen Service: {chosen_service}")
         if duration == 0.5:
-            print(f"\tDuration of {chosen_service}: 30-Minutes")
+            print(f"\t\tDuration of {chosen_service}: 30-Minutes")
         elif duration == 1.0:
-            print(f"\tDuration of {chosen_service}: {duration}-Hour")
+            print(f"\t\tDuration of {chosen_service}: {duration}-Hour")
         elif duration in [1.5, 2.0, 4.0, 8.0, 12.0, 24.0]:
-            print(f"\tDuration of {chosen_service}: {duration}-Hours")
+            print(f"\t\tDuration of {chosen_service}: {duration}-Hours")
         return None
 
     elif func == "registration":
         service_details = all_details[3:]
         service_type = service_details[0]
-        print(f"\tChosen Service: {service_type}")
+        print(f"\t\tChosen Service: {service_type}")
         return None
 
 
@@ -178,15 +178,13 @@ def confirm_input(func):
 
 
 def walk_input():
-    print("\nYou have chosen the walk service.\a")
-
     while True:
-        print("\nPlease choose the duration of walk:")
-        print("\n\t[1] 30-minutes")
-        print("\t[2] 1-hour")
-        print("\t[3] 1.5-hours")
-        print("\t[4] 2-hours")
-        print("\t[e] Go Back")
+        print("\n\tPlease choose the duration of walk:")
+        print("\n\t\t[1] 30-minutes")
+        print("\t\t[2] 1-hour")
+        print("\t\t[3] 1.5-hours")
+        print("\t\t[4] 2-hours")
+        print("\t\t[e] Go Back")
 
         choice = input("\n\tEnter your choice: ").strip()
 
@@ -210,15 +208,13 @@ def walk_input():
 
 
 def daycare_input():
-    print("\nYou have chosen the daycare service.\a")
-
     while True:
-        print("\nPlease choose the duration of daycare:")
-        print("\n\t[1] 4-hours")
-        print("\t[2] 8-hours")
-        print("\t[3] 12-hours")
-        print("\t[4] 24-hours")
-        print("\t[e] Go Back")
+        print("\n\tPlease choose the duration of daycare:")
+        print("\n\t\t[1] 4-hours")
+        print("\t\t[2] 8-hours")
+        print("\t\t[3] 12-hours")
+        print("\t\t[4] 24-hours")
+        print("\t\t[e] Go Back")
 
         choice = input("\n\tEnter your choice: ").strip()
 
@@ -306,7 +302,7 @@ def booking_input():
             print(
                 f'\n\tMaximum "{num_dogs}" breed names are allowed for "{num_dogs}" number of dogs.'
             )
-            print("It's really that simple. Try again. :0")
+            print("\tIt's really that simple. Try again. :0")
             continue
         if any(i.lower() == "exit" for i in dog_breed):
             print(EXIT_MSG)
@@ -360,7 +356,7 @@ def booking_input():
     show_details(all_details, func)
 
     fee = fee_calculation(chosen_service, duration)
-    print(f"\n\tTotal Fee: {fee}PKR")
+    print(f"\n\t\tTotal Fee: {fee}PKR")
 
     confirmation = confirm_input(func)
     if confirmation is True:
@@ -389,13 +385,13 @@ def service_input():
         service_type = (
             input("\tEnter the service you want to provide [walk/daycare]: ")
             .strip()
-            .lower()
+            .capitalize()
         )
         if service_type == "exit":
             print(EXIT_MSG)
             return None
-        elif service_type not in ["walk", "daycare"]:
-            print(INV_MSG)
+        elif service_type not in ["Walk", "Daycare"]:
+            print(f"{INV_MSG}\n")
             continue
         break
 
