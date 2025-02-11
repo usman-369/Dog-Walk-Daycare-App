@@ -1,14 +1,15 @@
-import csv
-import random
-import time
 import sys
+import csv
+import time
+import random
+
 from tabulate import tabulate
 
 
-EXIT_MSG = "\n\tExiting the menu. ;)"
-INV_MSG = "\n\tIvalid Choice! Try again. :0"
 FNF_MSG = "\nFile Not Found! :0"
 ERROR_MSG = "\nAn error occurred: "
+EXIT_MSG = "\n\tExiting the menu. ;)"
+INV_MSG = "\n\tIvalid Choice! Try again. :0"
 
 
 BOOKINGS_FILE = "bookings.csv"
@@ -55,7 +56,12 @@ def fetch_bookings():
                 "Service",
                 "Duration",
             ]
-            print(tabulate(reader, headers=headers, tablefmt="fancy_grid"))
+
+            table = []
+            for row in rows:
+                table.append(row)
+
+            print(tabulate(table, headers=headers, tablefmt="fancy_grid"))
             print("\nTotal Bookings:", len(rows))
     except FileNotFoundError:
         print(FNF_MSG)
@@ -71,9 +77,14 @@ def fetch_services():
             reader = csv.reader(file)
             rows = list(reader)
 
-            print("\nAll Walkers/Carers:")
+            print("\nAll Walkers/Carers:\n")
             headers = ["First Name", "Last Name", "Phone", "Service"]
-            print(tabulate(reader, headers=headers, tablefmt="fancy_grid"))
+
+            table = []
+            for row in rows:
+                table.append(row)
+
+            print(tabulate(table, headers=headers, tablefmt="fancy_grid"))
             print("\nTotal Walkers/Carers:", len(rows))
     except FileNotFoundError:
         print(FNF_MSG)
