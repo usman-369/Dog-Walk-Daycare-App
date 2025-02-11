@@ -37,4 +37,4 @@
 #     print("\n\tNote: Please use ")
 #     wlk_duration = input("\n\tEnter the duration of walk/daycare (e.g. 60-minutes/24-hours): ").strip().lower().split("-")
 
-#     if (len(wlk_duration) != 2)
+#     if (len(wlk_duration) != 2) or wlk_duration
