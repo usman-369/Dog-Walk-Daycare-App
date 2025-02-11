@@ -6,15 +6,12 @@
 #         if i.lower() == "e":
 #             print("\n\tExiting the menu. ;)")
 #             return None
-
 #         elif (not i.isdigit()) or (len(i) != 2) or (len(wlk_date) != 3):
 #             print("\n\tInvalid Input! Try again. :0")
 #             val = True
 #             break
-
 #     if val:
 #         continue
-
 #     break
 
 # while True:
@@ -30,7 +27,6 @@
 #     if (hour < 1) or (hour > 12) or (minute < 0) or (minute > 59):
 #         print("\n\tInvalid Time! Try again. :0")
 #         continue
-
 #     break
 
 # while True:
