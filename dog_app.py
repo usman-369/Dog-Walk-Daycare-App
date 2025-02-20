@@ -16,23 +16,11 @@ BOOKINGS_FILE = "bookings.csv"
 SERVICES_FILE = "services.csv"
 
 
-def save_bookings(booking_data):
+def save_data(data, data_file):
     try:
-        with open(BOOKINGS_FILE, mode="a", newline="") as file:
+        with open(data_file, mode="a", newline="") as file:
             write = csv.writer(file)
-            write.writerow(booking_data)
-    except FileNotFoundError:
-        print(FNF_MSG)
-    except Exception as e:
-        print(f"{ERROR_MSG}{e}")
-        return None
-
-
-def save_services(service_data):
-    try:
-        with open(SERVICES_FILE, mode="a", newline="") as file:
-            write = csv.writer(file)
-            write.writerow(service_data)
+            write.writerow(data)
     except FileNotFoundError:
         print(FNF_MSG)
     except Exception as e:
@@ -371,7 +359,7 @@ def booking_input():
 
     confirmation = confirm_input(func)
     if confirmation is True:
-        save_bookings(all_details)
+        save_data(all_details, BOOKINGS_FILE)
         print("\n\tBooking Successful! ;)")
         service_provider = assign_service(chosen_service)
         print(f"\n\tAssigned Walker/Carer: {service_provider[0]} {service_provider[1]}")
@@ -417,7 +405,7 @@ def service_input():
 
     confirmation = confirm_input(func)
     if confirmation is True:
-        save_services(all_details)
+        save_data(all_details, SERVICES_FILE)
         print("\n\tRegistration Successful! ;)")
         return None
     elif confirmation is False:
