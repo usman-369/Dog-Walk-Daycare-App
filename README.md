@@ -1,2 +1,2 @@
 # Dog-Walk-Daycare-App
-A CLI-based dog walk/daycare app written in Python.
+A CLI-based application for dog walking and daycare booking, developed in Python.
