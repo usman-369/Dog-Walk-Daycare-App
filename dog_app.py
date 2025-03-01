@@ -2,12 +2,17 @@ import sys
 import csv
 import time
 import random
-
 from tabulate import tabulate
 
+try:
+    import readline
+except ImportError:
+    try:
+        import pyreadline3 as readline
+    except ImportError:
+        readline = None
 
-FNF_MSG = "\nFile Not Found! :0"
-ERROR_MSG = "\nAn error occurred: "
+
 EXIT_MSG = "\n\tExiting the menu. ;)"
 INV_MSG = "\n\tIvalid Choice! Try again. :0"
 
@@ -16,88 +21,95 @@ BOOKINGS_FILE = "bookings.csv"
 SERVICES_FILE = "services.csv"
 
 
-def save_data(data, data_file):
+def open_file(data_file, data=False):
     try:
-        with open(data_file, mode="a", newline="") as file:
-            write = csv.writer(file)
-            write.writerow(data)
+        if data:
+            with open(data_file, mode="a", newline="") as file:
+                write = csv.writer(file)
+                write.writerow(data)
+                return True
+        elif not data:
+            with open(data_file, mode="r") as file:
+                reader = csv.reader(file)
+                rows = list(reader)
+                return rows
     except FileNotFoundError:
-        print(FNF_MSG)
-    except Exception as e:
-        print(f"{ERROR_MSG}{e}")
-        return None
-
-
-def fetch_bookings():
-    try:
-        with open(BOOKINGS_FILE, mode="r") as file:
-            reader = csv.reader(file)
-            rows = list(reader)
-
-            print("\nAll Bookings:\n")
-            headers = [
-                "First Name",
-                "Last Name",
-                "Phone",
-                "Dogs",
-                "Breed",
-                "Service",
-                "Duration",
-            ]
-
-            table = []
-            for row in rows:
-                table.append(row)
-
-            print(tabulate(table, headers=headers, tablefmt="fancy_grid"))
-            print("\nTotal Bookings:", len(rows))
-    except FileNotFoundError:
-        print(FNF_MSG)
+        print("\n\tFile Not Found! :0")
         return None
     except Exception as e:
-        print(f"{ERROR_MSG}{e}")
+        print(f"\n\tAn error occurred: {e}")
         return None
 
 
-def fetch_services():
-    try:
-        with open(SERVICES_FILE, mode="r") as file:
-            reader = csv.reader(file)
-            rows = list(reader)
+def fetch_data(data_file):
+    rows = open_file(data_file)
 
-            print("\nAll Walkers/Carers:\n")
-            headers = ["First Name", "Last Name", "Phone", "Service"]
+    wlk = [
+        row
+        for row in rows
+        if row[3].strip().lower() == "walk"
+        or (len(row) > 5 and row[5].strip().lower() == "walk")
+    ]
+    day = [
+        row
+        for row in rows
+        if row[3].strip().lower() == "daycare"
+        or (len(row) > 5 and row[5].strip().lower() == "daycare")
+    ]
 
-            table = []
-            for row in rows:
-                table.append(row)
+    if data_file == BOOKINGS_FILE:
+        print("\n\nAll Bookings:\n")
 
-            print(tabulate(table, headers=headers, tablefmt="fancy_grid"))
-            print("\nTotal Walkers/Carers:", len(rows))
-    except FileNotFoundError:
-        print(FNF_MSG)
-        return None
-    except Exception as e:
-        print(f"{ERROR_MSG}{e}")
-        return None
+        headers = [
+            "First Name",
+            "Last Name",
+            "Phone",
+            "Dogs",
+            "Breed",
+            "Service",
+            "Duration",
+        ]
+
+        line1 = "\nTotal walk bookings:" + str(len(wlk))
+        line2 = "Total daycare bookings:" + str(len(day))
+
+    elif data_file == SERVICES_FILE:
+        print("\n\nAll Walkers/Carers:\n")
+
+        headers = ["First Name", "Last Name", "Phone", "Service"]
+
+        line1 = "\nTotal walkers: " + str(len(wlk))
+        line2 = "Total carers: " + str(len(day))
+
+    table = []
+    for row in rows:
+        table.append(row)
+    print(tabulate(table, headers=headers, tablefmt="fancy_grid"))
+
+    print(line1)
+    print(line2)
 
 
 def assign_service(chosen_service):
-    try:
-        with open(SERVICES_FILE, mode="r") as file:
-            reader = csv.reader(file)
+    rows = open_file(SERVICES_FILE)
 
-            rows = [row for row in reader if row[3].strip() == chosen_service]
-            if rows:
-                return random.choice(rows)
-            else:
-                return None
-    except FileNotFoundError:
-        print(FNF_MSG)
+    persons = [row for row in rows if row[3].strip() == chosen_service]
+    if persons:
+        return random.choice(persons)
+    else:
         return None
-    except Exception as e:
-        print(f"{ERROR_MSG}{e}")
-        return None
+
+
+def fee_calculation(chosen_service, duration):
+    walk_fee_rates = {0.5: 500.0, 1.0: 1000.0, 1.5: 1500.0, 2.0: 2000.0}
+    daycare_fee_rates = {4.0: 3000.0, 8.0: 5000.0, 12.0: 7000.0, 24.0: 10000.0}
+
+    if chosen_service == "Walk":
+        walk_fee = walk_fee_rates.get(duration)
+        return walk_fee
+    elif chosen_service == "Daycare":
+        daycare_fee = daycare_fee_rates.get(duration)
+        return daycare_fee
 
 
 def show_details(all_details, func):
@@ -127,18 +139,6 @@ def show_details(all_details, func):
         service_type = service_details[0]
         print(f"\t\tChosen Service: {service_type}")
         return None
-
-
-def fee_calculation(chosen_service, duration):
-    walk_fee_rates = {0.5: 500.0, 1.0: 1000.0, 1.5: 1500.0, 2.0: 2000.0}
-    daycare_fee_rates = {4.0: 3000.0, 8.0: 5000.0, 12.0: 7000.0, 24.0: 10000.0}
-
-    if chosen_service == "Walk":
-        walk_fee = walk_fee_rates.get(duration)
-        return walk_fee
-    elif chosen_service == "Daycare":
-        daycare_fee = daycare_fee_rates.get(duration)
-        return daycare_fee
 
 
 def confirm_input(func):
@@ -269,7 +269,7 @@ def general_input():
 
 
 def booking_input():
-    print("\nBooking Menu:")
+    print("\n\nBooking Menu:")
 
     g_input = general_input()
     if g_input is None:
@@ -336,10 +336,10 @@ def booking_input():
     availability = assign_service(chosen_service)
     if not availability:
         if chosen_service == "Walk":
-            print("\nSorry, no walker is available at the moment. :(")
+            print("\n\tSorry, no walker is available at the moment. :(")
             return None
         elif chosen_service == "Daycare":
-            print("\nSorry, no carer is available at the moment. :(")
+            print("\n\tSorry, no carer is available at the moment. :(")
             return None
 
     func = "booking"
@@ -355,23 +355,26 @@ def booking_input():
     show_details(all_details, func)
 
     fee = fee_calculation(chosen_service, duration)
-    print(f"\n\t\tTotal Fee: {fee}PKR")
+    print(f"\n\t\tFee to Pay: {fee}PKR")
 
     confirmation = confirm_input(func)
     if confirmation is True:
-        save_data(all_details, BOOKINGS_FILE)
-        print("\n\tBooking Successful! ;)")
-        service_provider = assign_service(chosen_service)
-        print(f"\n\tAssigned Walker/Carer: {service_provider[0]} {service_provider[1]}")
-        print(f"\tContact: {service_provider[2]}")
-        return None
+        saved = open_file(BOOKINGS_FILE, all_details)
+        if saved:
+            print("\n\tBooking Successful! ;)")
+            service_provider = assign_service(chosen_service)
+            print(
+                f"\n\tAssigned person for your service: {service_provider[0]} {service_provider[1]}"
+            )
+            print(f"\tContact: {service_provider[2]}")
+            return None
     elif confirmation is False:
         print(EXIT_MSG)
         return None
 
 
 def service_input():
-    print("\nWalker/Carer Registration Menu:")
+    print("\n\nWalker/Carer Registration Menu:")
 
     g_input = general_input()
     if g_input is None:
@@ -405,20 +408,21 @@ def service_input():
 
     confirmation = confirm_input(func)
     if confirmation is True:
-        save_data(all_details, SERVICES_FILE)
-        print("\n\tRegistration Successful! ;)")
-        return None
+        saved = open_file(SERVICES_FILE, all_details)
+        if saved:
+            print("\n\tRegistration Successful! ;)")
+            return None
     elif confirmation is False:
         print(EXIT_MSG)
         return None
 
 
 def main():
-    print("\nWELCOME TO DOG WALKING/DAYCARE APP")
+    print("\n\nWELCOME TO DOG WALKING/DAYCARE APP")
     print("====(Where Dogs Can Have Fun!)====")
 
     while True:
-        print("\nMain Menu:")
+        print("\n\nMain Menu:")
         print("\n\t[1] Book A Walk/Daycare")
         print("\t[2] Be A Walker/Carer")
         print("\t[3] View All Bookings")
@@ -431,11 +435,11 @@ def main():
         elif choice == "2":
             service_input()
         elif choice == "3":
-            fetch_bookings()
+            fetch_data(BOOKINGS_FILE)
         elif choice == "4":
-            fetch_services()
+            fetch_data(SERVICES_FILE)
         elif choice.lower() == "e":
-            print("\nExiting the program. Bye! ;)\n")
+            print("\n\nExiting the program. Bye! ;)\n\n")
             time.sleep(1)
             sys.exit()
         else:
