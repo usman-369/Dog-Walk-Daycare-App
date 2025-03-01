@@ -282,13 +282,20 @@ def general_input():
     )
 
     while True:
-        first_name = input("\tEnter your first name: ").strip().capitalize()
+        first_name = (
+            input("\tEnter your first name: ").strip().replace(" ", "").capitalize()
+        )
         if first_name.lower() == "exit":
             return None
 
-        last_name = input("\tEnter your last name: ").strip().capitalize()
+        last_name = (
+            input("\tEnter your last name: ").strip().replace(" ", "").capitalize()
+        )
         if last_name.lower() == "exit":
             return None
+        elif not first_name or not last_name:
+            print("\n\tError! A name can't be empty. :0\n")
+            continue
         elif (len(first_name) > 15) or (len(last_name) > 15):
             print(
                 '\n\tError! Maximum character limit for a name is "15" characters each. :0\n'
@@ -334,15 +341,21 @@ def booking_input():
 
     print('\n\tNote: If there are more than one breeds, add comma "," after each one.')
     while True:
-        dog_breed = (
-            input("\n\tEnter the breed name(s): ").strip().capitalize().split(",")
-        )
-        if len(dog_breed) > int(num_dogs):
+        dog_breed = [
+            " ".join(breed.strip().split()).title()
+            for breed in input("\n\tEnter the breed name(s): ").split(",")
+        ]
+
+        if not all(breed for breed in dog_breed):
+            print("\n\tError! A breed name can't be empty. :0")
+            continue
+        elif len(dog_breed) > int(num_dogs):
             print(
                 f'\n\tMaximum "{num_dogs}" breed names are allowed for "{num_dogs}" number of dogs.'
             )
             print("\tIt's really that simple. Try again. :0")
             continue
+
         if any(i.lower() == "exit" for i in dog_breed):
             print(EXIT_MSG)
             return None
