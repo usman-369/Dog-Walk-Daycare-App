@@ -28,7 +28,7 @@ def open_file(data_file, data=False):
                 write = csv.writer(file)
                 write.writerow(data)
                 return True
-        elif not data:
+        else:
             with open(data_file, mode="r") as file:
                 reader = csv.reader(file)
                 rows = list(reader)
