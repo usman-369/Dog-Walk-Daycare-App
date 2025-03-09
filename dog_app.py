@@ -34,10 +34,10 @@ def open_file(data_file, data=False):
                 rows = list(reader)
                 return rows
     except FileNotFoundError:
-        print("\n\tFile Not Found! :0")
+        print("\n\tError: File Not Found! :0")
         return None
     except Exception as e:
-        print(f"\n\tAn error occurred: {e}")
+        print(f"\n\tError: {e} :0")
         return None
 
 
