@@ -69,7 +69,7 @@ This project is licensed under the **MIT License**.
 ## 👤 Authors
 
 - **Name:** Imran, Usman
-- **GitHub:** codewithimran-786, usman-369
+- **GitHub:** [codewithimran-786](https://github.com/codewithimran-786), [usman-369](https://github.com/usman-369)
 
 ---
 
