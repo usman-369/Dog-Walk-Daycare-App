@@ -26,10 +26,14 @@ The **Dog Walk & Daycare Booking App** is a **CLI-based Python application** tha
 1. Clone the repository:
    ```sh
    git clone https://github.com/usman-369/Dog-Walk-Daycare-App.git
-   cd Dog-Walk-Daycare-App
    ```
-2. Run the Python script:
+2. Install dependencies:
    ```sh
+   pip install tabulate
+   ```
+3. Run the Python script:
+   ```sh
+   cd Dog-Walk-Daycare-App
    python dog_app.py
    ```
 
