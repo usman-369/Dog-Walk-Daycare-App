@@ -2,7 +2,12 @@ import sys
 import csv
 import time
 import random
-from tabulate import tabulate
+
+try:
+    from tabulate import tabulate
+    tab_available = True
+except ImportError:
+    tab_available = False
 
 try:
     import readline
@@ -27,7 +32,7 @@ def open_file(data_file, data=False):
             with open(data_file, mode="a", newline="") as file:
                 write = csv.writer(file)
                 write.writerow(data)
-                return True
+                return None
         else:
             with open(data_file, mode="r") as file:
                 reader = csv.reader(file)
@@ -35,14 +40,16 @@ def open_file(data_file, data=False):
                 return rows
     except FileNotFoundError:
         print("\n\tError: File Not Found! :0")
-        return None
+        return False
     except Exception as e:
         print(f"\n\tError: {e} :0")
-        return None
+        return False
 
 
 def fetch_data(data_file):
     rows = open_file(data_file)
+    if rows is False:
+        return None
 
     wlk = [
         row
@@ -81,10 +88,14 @@ def fetch_data(data_file):
         line1 = "\nTotal walkers: " + str(len(wlk))
         line2 = "Total carers: " + str(len(day))
 
-    table = []
-    for row in rows:
-        table.append(row)
-    print(tabulate(table, headers=headers, tablefmt="fancy_grid"))
+    if tab_available:
+        table = []
+        for row in rows:
+            table.append(row)
+        print(tabulate(table, headers=headers, tablefmt="fancy_grid"))
+    else:
+        for row in rows:
+            print(f"\t{row}")
 
     print(line1)
     print(line2)
@@ -92,6 +103,8 @@ def fetch_data(data_file):
 
 def assign_service(chosen_service):
     rows = open_file(SERVICES_FILE)
+    if rows is False:
+        return None
 
     persons = [row for row in rows if row[3].strip() == chosen_service]
     if persons:
@@ -373,7 +386,9 @@ def booking_input():
     confirmation = confirm_input(func)
     if confirmation is True:
         saved = open_file(BOOKINGS_FILE, all_details)
-        if saved:
+        if saved is False:
+            return None
+        elif saved is None:
             print("\n\tBooking Successful! ;)")
             service_provider = assign_service(chosen_service)
             print(
@@ -422,7 +437,9 @@ def service_input():
     confirmation = confirm_input(func)
     if confirmation is True:
         saved = open_file(SERVICES_FILE, all_details)
-        if saved:
+        if saved is False:
+            return None
+        elif saved is None:
             print("\n\tRegistration Successful! ;)")
             return None
     elif confirmation is False:
