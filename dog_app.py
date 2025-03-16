@@ -19,20 +19,20 @@ except ImportError:
 
 
 EXIT_MSG = "\n\tExiting the menu. ;)"
-INV_MSG = "\n\tIvalid Choice! Try again. :0"
+INV_MSG = "\n\tInvalid Choice! Try again. :0"
 
 
 BOOKINGS_FILE = "bookings.csv"
 SERVICES_FILE = "services.csv"
 
 
-def open_file(data_file, data=False):
+def open_file(data_file, data=None):
     try:
         if data:
             with open(data_file, mode="a", newline="") as file:
                 write = csv.writer(file)
                 write.writerow(data)
-                return None
+                return True
         else:
             with open(data_file, mode="r") as file:
                 reader = csv.reader(file)
@@ -251,7 +251,7 @@ def daycare_input():
 
 def general_input():
     print(
-        "\n\tNote: You can always enter [exit] to\n\tdiscard everything and exit from the menu.\n"
+        "\n\tNote: You can always enter [exit] to discard\n\teverything and exit to the main menu.\n"
     )
 
     while True:
@@ -307,8 +307,8 @@ def booking_input():
             print(f"{INV_MSG}\n")
             continue
         elif int(num_dogs) > 5:
-            print('\n\tCan\'t accept more than "5" dogs for a walk.')
-            print("\tDog walkers are human too. :0\n")
+            print('\n\tCan\'t accept more than "5" dogs for a walk/daycare.')
+            print("\tDog walkers/carers are human too. :0\n")
             continue
         break
 
@@ -385,10 +385,10 @@ def booking_input():
 
     confirmation = confirm_input(func)
     if confirmation is True:
-        saved = open_file(BOOKINGS_FILE, all_details)
-        if saved is False:
+        save = open_file(BOOKINGS_FILE, all_details)
+        if save is False:
             return None
-        elif saved is None:
+        elif save is True:
             print("\n\tBooking Successful! ;)")
             service_provider = assign_service(chosen_service)
             print(
@@ -436,10 +436,10 @@ def service_input():
 
     confirmation = confirm_input(func)
     if confirmation is True:
-        saved = open_file(SERVICES_FILE, all_details)
-        if saved is False:
+        save = open_file(SERVICES_FILE, all_details)
+        if save is False:
             return None
-        elif saved is None:
+        elif save is True:
             print("\n\tRegistration Successful! ;)")
             return None
     elif confirmation is False:
@@ -469,7 +469,7 @@ def main():
         elif choice == "4":
             fetch_data(SERVICES_FILE)
         elif choice.lower() == "e":
-            print("\n\nExiting the program. Bye! ;)\n\n")
+            print("\n\n\tExiting the program. Bye! ;)\n\n")
             time.sleep(1)
             sys.exit()
         else:
