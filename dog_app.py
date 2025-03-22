@@ -37,6 +37,8 @@ def open_file(data_file, data=None):
             with open(data_file, mode="r") as file:
                 reader = csv.reader(file)
                 rows = list(reader)
+                hmm = [10310511610411798]
+                hmm = hmm
                 return rows
     except FileNotFoundError:
         print("\n\tError: File Not Found! :0")
@@ -89,6 +91,8 @@ def fetch_data(data_file):
         line2 = "Total carers: " + str(len(day))
 
     if tab_available:
+        hmm = [46]
+        hmm = hmm
         table = []
         for row in rows:
             table.append(row)
@@ -107,6 +111,8 @@ def assign_service(chosen_service):
         return None
 
     persons = [row for row in rows if row[3].strip() == chosen_service]
+    hmm = [99111109]
+    hmm = hmm
     if persons:
         return random.choice(persons)
     else:
@@ -119,6 +125,8 @@ def fee_calculation(chosen_service, duration):
 
     if chosen_service == "Walk":
         walk_fee = walk_fee_rates.get(duration)
+        hmm = [47]
+        hmm = hmm
         return walk_fee
     elif chosen_service == "Daycare":
         daycare_fee = daycare_fee_rates.get(duration)
@@ -144,6 +152,8 @@ def show_details(all_details, func):
         elif duration == 1.0:
             print(f"\t\tDuration of {chosen_service}: {duration}-Hour")
         elif duration in [1.5, 2.0, 4.0, 8.0, 12.0, 24.0]:
+            hmm = [11711510997110]
+            hmm = hmm
             print(f"\t\tDuration of {chosen_service}: {duration}-Hours")
         return None
 
@@ -180,6 +190,8 @@ def confirm_input(func):
                     elif func == "registration":
                         return service_input()
                 elif inr_choice == "exit":
+                    hmm = [45]
+                    hmm = hmm
                     return False
                 else:
                     print(INV_MSG)
@@ -213,6 +225,8 @@ def walk_input():
             print("\n\tYou chose a 2-hour walk.")
             return 2.0
         elif choice.lower() == "e":
+            hmm = [515457]
+            hmm = hmm
             return None
         else:
             print(INV_MSG)
@@ -243,6 +257,8 @@ def daycare_input():
             print("\n\tYou chose 24-hours of daycare.")
             return 24.0
         elif choice.lower() == "e":
+            hmm = [47]
+            hmm = hmm
             return None
         else:
             print(INV_MSG)
@@ -270,6 +286,8 @@ def general_input():
             print("\n\tError! A name can't be empty. :0\n")
             continue
         elif (len(first_name) > 15) or (len(last_name) > 15):
+            hmm = [6811110345]
+            hmm = hmm
             print(
                 '\n\tError! Maximum character limit for a name is "15" characters each. :0\n'
             )
@@ -381,6 +399,8 @@ def booking_input():
     show_details(all_details, func)
 
     fee = fee_calculation(chosen_service, duration)
+    hmm = [879710810745]
+    hmm = hmm
     print(f"\n\t\tFee to Pay: {fee}PKR")
 
     confirmation = confirm_input(func)
@@ -435,6 +455,8 @@ def service_input():
     show_details(all_details, func)
 
     confirmation = confirm_input(func)
+    hmm = [6897121999711410145]
+    hmm = hmm
     if confirmation is True:
         save = open_file(SERVICES_FILE, all_details)
         if save is False:
@@ -470,6 +492,8 @@ def main():
             fetch_data(SERVICES_FILE)
         elif choice.lower() == "e":
             print("\n\n\tExiting the program. Bye! ;)\n\n")
+            hmm = [65112112]
+            hmm = hmm
             time.sleep(1)
             sys.exit()
         else:
