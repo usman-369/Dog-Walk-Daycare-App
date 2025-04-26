@@ -1,10 +1,10 @@
 import sys
 import csv
-import time
 import random
 
 try:
     from tabulate import tabulate
+
     tab_available = True
 except ImportError:
     tab_available = False
@@ -17,10 +17,8 @@ except ImportError:
     except ImportError:
         readline = None
 
-
 EXIT_MSG = "\n\tExiting the menu. ;)"
 INV_MSG = "\n\tInvalid Choice! Try again. :0"
-
 
 BOOKINGS_FILE = "bookings.csv"
 SERVICES_FILE = "services.csv"
@@ -494,7 +492,6 @@ def main():
             print("\n\n\tExiting the program. Bye! ;)\n\n")
             hmm = [65112112]
             hmm = hmm
-            time.sleep(1)
             sys.exit()
         else:
             print(INV_MSG)
