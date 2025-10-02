@@ -18,7 +18,6 @@ The **Dog Walk & Daycare Booking App** is a **CLI-based Python application** tha
 - **Tabulate 0.8.10** (Pretty-print tabular data)
   - Home: [GitHub](https://github.com/astanin/python-tabulate)
   - Author: Sergey Astanin ([s.astanin@gmail.com](mailto\:s.astanin@gmail.com))
-  - License: MIT
 - **CSV Files** (Data storage for bookings and walkers)
 
 ## 🚀 How to Run the Project
@@ -33,7 +32,7 @@ The **Dog Walk & Daycare Booking App** is a **CLI-based Python application** tha
    ```
 3. Run the Python script:
    ```sh
-   cd Dog-Walk-Daycare-App
+   cd Dog-Walk-Daycare-App/DWDA
    python dog_app.py
    ```
 
@@ -48,11 +47,14 @@ The **Dog Walk & Daycare Booking App** is a **CLI-based Python application** tha
 ## 📜 File Structure
 
 ```
-├── dog_app.py            # Code file
-├── ditched.py            # Ditched functionalities
-├── bookings.csv          # Stores booking records
-├── walkers.csv           # Stores walker/carer details
-└── README.md             # Project documentation
+.
+├── DWDA
+│   ├── bookings.csv
+│   ├── ditched.py
+│   ├── dog_app.py
+│   └── services.csv
+├── LICENSE
+└── README.md
 ```
 
 ## 📌 Future Improvements
@@ -72,10 +74,9 @@ This project is licensed under the **MIT License**.
 
 ## 👤 Authors
 
-- **Name:** Imran, Usman
-- **GitHub:** [codewithimran-786](https://github.com/codewithimran-786), [usman-369](https://github.com/usman-369)
+- **Name:** Usman, Imran
+- **GitHub:** [usman-369](https://github.com/usman-369), [codewithimran-786](https://github.com/codewithimran-786)
 
 ---
 
 🐾 Happy Dawg Walking! 🐾   **:)**
-
