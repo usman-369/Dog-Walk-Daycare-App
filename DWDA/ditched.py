@@ -1,3 +1,5 @@
+"""Ditched functionalities."""
+
 # while True:
 #     wlk_date = input("\n\tEnter the date of walk (e.g. DD-MM-YY): ").strip().split("-")
 
