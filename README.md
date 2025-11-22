@@ -23,14 +23,19 @@ The **Dog Walk & Daycare Booking App** is a **CLI-based Python application** tha
 ## 🚀 How to Run the Project
 
 1. Clone the repository:
+
    ```sh
    git clone https://github.com/usman-369/Dog-Walk-Daycare-App.git
    ```
+
 2. Install dependencies:
+
    ```sh
    pip install tabulate
    ```
+
 3. Run the Python script:
+
    ```sh
    cd Dog-Walk-Daycare-App/DWDA
    python dog_app.py
@@ -46,7 +51,7 @@ The **Dog Walk & Daycare Booking App** is a **CLI-based Python application** tha
 
 ## 📜 File Structure
 
-```
+```text
 .
 ├── DWDA
 │   ├── bookings.csv
@@ -62,11 +67,11 @@ The **Dog Walk & Daycare Booking App** is a **CLI-based Python application** tha
 - Add a **proper database** instead of **CSV**.
 - Implement a **GUI version**.
 - Add a **notification system** for booking confirmation.
-- **Eeetttccc** (Do it!!!).   **:|**
+- **Eeetttccc** (Do it!!!). **:|**
 
 ## 🤝 Contributing
 
-Feel free to contribute by submitting **issues** or **pull requests**.   **:0**
+Feel free to contribute by submitting **issues** or **pull requests**. **:0**
 
 ## 📜 License
 
@@ -74,9 +79,9 @@ This project is licensed under the **MIT License**.
 
 ## 👤 Authors
 
-- **Name:** Usman, Imran
+- **Name:** Usman Ghani, Imran Nawaz
 - **GitHub:** [usman-369](https://github.com/usman-369), [codewithimran-786](https://github.com/codewithimran-786)
 
 ---
 
-🐾 Happy Dawg Walking! 🐾   **:)**
+🐾 Happy Dawg Walking! 🐾 **:)**
